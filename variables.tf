@@ -39,8 +39,3 @@ variable "most_recent" {
   type = bool
   default = true
 }
-variable "key_name" {
-  description = "SSH key pair"
-  type = string
-  default = "MyKeyPair"
-}
