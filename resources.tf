@@ -44,6 +44,18 @@ resource "aws_instance" "ec2_aws" {
     Name = "Terraform ec2"
   }
 }
+
+variable "userNames" {
+  description = "names"
+  type = set(string)
+  default = ["Todd", "James", "Alice", "Dottie"]
+}
+
+resource "aws_iam_user" "example" {
+  for_each = var.userNames
+  name     = each.value
+}
+
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -63,4 +75,8 @@ data "aws_ami" "ubuntu" {
 output "instance_id" {
   description = "ID of the EC2 instance"
   value       = aws_instance.ec2_aws.id
+}
+
+output "loops" {
+  value = aws_iam_user.example
 }
