@@ -1,18 +1,18 @@
 # vpc
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.cidr_block_vpc
   tags = {
-    name = "main"
+    name = var.tags
   }
 }
 
 # subnet
 resource "aws_subnet" "main" {
   vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.1.0/24"
+  cidr_block = var.cidr_block
 
   tags = {
-    Name = "Main"
+    Name = var.tags
   }
 }
 
@@ -21,11 +21,11 @@ resource "aws_route_table" "example" {
   vpc_id = aws_vpc.main.id
 
   route {
-    cidr_block = "10.0.1.0/24"
+    cidr_block = var.cidr_block
   }
 
   tags = {
-    Name = "example"
+    Name = var.tags
   }
 }
 
@@ -37,18 +37,12 @@ resource "aws_route_table_association" "a" {
 # Aws instance
 resource "aws_instance" "ec2_aws" {
   ami           = "${data.aws_ami.ubuntu.id}"
-  instance_type = "t2.micro"
-  key_name      = "MyKeyPair"
+  instance_type = var.instance_type
+  key_name      = var.key_name
 
   tags = {
     Name = "Terraform ec2"
   }
-}
-
-variable "userNames" {
-  description = "names"
-  type = set(string)
-  default = ["Todd", "James", "Alice", "Dottie"]
 }
 
 resource "aws_iam_user" "example" {
@@ -57,7 +51,7 @@ resource "aws_iam_user" "example" {
 }
 
 data "aws_ami" "ubuntu" {
-  most_recent = true
+  most_recent = var.most_recent
 
   filter {
     name   = "name"
