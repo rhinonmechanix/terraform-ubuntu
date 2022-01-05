@@ -65,12 +65,3 @@ data "aws_ami" "ubuntu" {
 
   owners = ["099720109477"] # Canonical
 }
-
-output "instance_id" {
-  description = "ID of the EC2 instance"
-  value       = aws_instance.ec2_aws.id
-}
-
-output "loops" {
-  value = aws_iam_user.example
-}
