@@ -3,7 +3,7 @@ resource "aws_route_table" "example" {
 }
 
 resource "aws_route_table_association" "subnet-route-associations" {
-  for_each = aws_subnet.main
-  subnet_id = aws_subnet.main[each.key].id
+  count = length(var.public_subnet)
+  subnet_id = aws_subnet.main[count.index].id
   route_table_id = aws_route_table.example.id
 }

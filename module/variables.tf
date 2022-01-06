@@ -5,13 +5,7 @@ variable "vpc_cidr" {
 }
 
 variable "public_subnet" {
-    type = map(number)
+    type = list(string)
     description = "VPC Ip range"
-  default = {
-    us-east-1      = 1
-    us-west-1      = 2
-    us-west-2      = 3
-    eu-central-1   = 4
-    ap-northeast-1 = 5
-  }
+    default = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 }
