@@ -22,3 +22,11 @@
 
 5. delete the application
 -> eb terminate
+
+------------------------------------------------------
+
+Updating the EB environment
+
+-> aws elasticbeanstalk update-environment --environment-name my-env --version-label v2
+
+This changes the environment "my-env" to version "v2".
