@@ -1,3 +1,15 @@
+1. we need to install eb cli
+-> pip install --upgrade --user awsebcli
+
+2. Or by cloning the git repo
+-> git clone https://github.com/aws/aws-elastic-beanstalk-cli-setup
+-> run bundled_installer inside the directory
+
+3. Check version
+-> eb --version
+
+-----------------------------------------------------------------------------------------
+
 1. make a particular directory for EB environment
 -> mkdir Getting-started
 
