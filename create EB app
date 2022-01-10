@@ -1,0 +1,24 @@
+1. make a particular directory for EB environment
+-> mkdir Getting-started
+
+2. Starting the EB environmnet
+-> eb init
+-> select region --
+-> application name --
+-> select Platform
+-> type yes/no according to, if we need setup ssh for the instance
+-> select Keypair.
+
+3. Creating the EB application
+-> eb create
+-> enter environment name
+-> enter DNS CNAME prefix - which sgould be unique
+-> select load balancer - default is 2:
+-> after installation
+   -> check the application using -> eb list
+
+4. Updating the configuration
+-> eb config
+
+5. delete the application
+-> eb terminate
