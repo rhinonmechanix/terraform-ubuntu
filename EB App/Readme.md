@@ -42,3 +42,29 @@ Updating the EB environment
 -> aws elasticbeanstalk update-environment --environment-name my-env --version-label v2
 
 This changes the environment "my-env" to version "v2".
+
+--------------------------------------------------------------------------------------------------------
+
+
+EB UI Deployment
+
+1. Open Elastic beanstalk console
+
+2. Open create new application
+ a. Give application name.
+ b. Give application tags -> key-value pair if have any!
+ c. Choose platform and its version
+ d. choose application code as sample application
+
+3. Click create environment.
+
+4. It will take some time to process, which will create Environment (Creating aplication_name-env)
+
+5. After the environment was created, we will see options, if we come below, which show-
+  i)   Health - to check status or performance
+  ii)  Running Version - to Upload and deploy the application
+  iii) platform - Platform details
+
+6. Click Upload and deploy from Running version
+
+from here we can deploy our application.
