@@ -10,38 +10,24 @@ import json
 global args
 parser = argparse.ArgumentParser()
 
-parser.add_argument('-sa', '--source_aws_access_key_id', required=True, action="store", dest="source_aws_access_key_id",
-                    help="Source AWS Account aws_access_key_id", default=None)
-parser.add_argument('-ss', '--source_aws_secret_access_key', required=True, action="store", dest="source_aws_secret_access_key",
-                    help="Source AWS Account aws_secret_access_key", default=None)
-parser.add_argument('-da', '--destination_aws_access_key_id', required=True, action="store", dest="destination_aws_access_key_id",
-                    help="Destination AWS Account aws_access_key_id", default=None)
-parser.add_argument('-ds', '--destination_aws_secret_access_key', required=True, action="store", dest="destination_aws_secret_access_key",
-                    help="Destination AWS Account aws_secret_access_key", default=None)
 parser.add_argument('-st', '--sourceTableName', required=True, action="store", dest="sourceTableName",
                     help="Source AWS Account DyanamoDB Table", default=None)
 parser.add_argument('-dt', '--destinationTableName', required=True, action="store", dest="destinationTableName",
                     help="Destination AWS Account DyanamoDB Table", default=None) 
 args = parser.parse_args()                                                                                                                       
 
-source_aws_access_key_id = args.source_aws_access_key_id
-source_aws_secret_access_key = args.source_aws_secret_access_key
 
-destination_aws_access_key_id = args.destination_aws_access_key_id
-destination_aws_secret_access_key = args.destination_aws_secret_access_key
 
 
 sourceTableName=args.sourceTableName 
 destinationTableName=args.destinationTableName 
 
+region = 'us-west-1'
+
 sourceTableExists = "false" 
 destinationTableExists = "false" 
 
 print("Printing values")
-print("source_aws_access_key_id", source_aws_access_key_id)
-print("source_aws_secret_access_key", source_aws_secret_access_key)
-print("destination_aws_access_key_id", destination_aws_access_key_id)
-print("destination_aws_secret_access_key", destination_aws_secret_access_key)
 print("sourceTableName", sourceTableName)
 print("destinationTableName", destinationTableName)
 
@@ -52,20 +38,16 @@ backupName = destinationTableName + str(timeStamp.strftime("-%Y_%m_%d_%H_%M_%S")
 item_count = 1000 #Specify total number of items to be copied here, this helps when a specified number of items need to be copied
 counter = 1 # Don't not change this
 
-source_session = boto3.Session(region_name='region', aws_access_key_id=source_aws_access_key_id, aws_secret_access_key=source_aws_secret_access_key)
+source_session = boto3.Session(region_name=region)
 source_dynamo_client = source_session.client('dynamodb')
 
-target_session = boto3.Session(region_name='region', aws_access_key_id=destination_aws_access_key_id, aws_secret_access_key=destination_aws_secret_access_key)
+target_session = boto3.Session(region_name=region)
 target_dynamodb = target_session.resource('dynamodb')
 
 
-dynamoclient = boto3.client('dynamodb', region_name='region', #Specify the region here
-    aws_access_key_id=source_aws_access_key_id,  #Add you source account's access key here
-    aws_secret_access_key=source_aws_secret_access_key) #Add you source account's secret key here
+dynamoclient = boto3.client('dynamodb', region_name=region) #Specify the region here
 
-dynamotargetclient = boto3.client('dynamodb', region_name='region', #Specify the region here
-    aws_access_key_id=destination_aws_access_key_id, #Add you destination account's access key here
-    aws_secret_access_key=destination_aws_secret_access_key) #Add you destination account's secret key here
+dynamotargetclient = boto3.client('dynamodb', region_name=region) #Specify the region here
 # response = dynamotargetclient.list_tables()
 # print("List of tables", response)
 
