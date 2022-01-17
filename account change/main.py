@@ -3,6 +3,7 @@ import os
 import sys
 import argparse
 import datetime
+import json
 
 
 
@@ -89,10 +90,10 @@ def validateTables(sourceTable, destinationTable):
 
 
 
-def copyTable(sourceTable, destinationTable,item_count,counter):
+def copyTable(sourceTable, json1, item_count,counter):
     
     print("Inside copyTable")
-    print("Coping", sourceTable, "to", destinationTable)
+    print("Coping", sourceTable, "to", json1)
 
     print('Start Reading the Source Table')
     try:
@@ -108,9 +109,24 @@ def copyTable(sourceTable, destinationTable,item_count,counter):
         sys.exit()
 
     print('Finished Reading the Table')
-    print('Proceed with writing to the Destination Table')
     print("Writing first", item_count , "items" )
     print(dynamoresponse)
+    
+    with open("Dynamoresponse.json", "w") as outfile:
+        json.dump(dynamoresponse, outfile)
+        
+    with open("sourceTable.json", "w") as outfile:
+        json.dump(sourceTable, outfile)
+
+def copyToAnother(json1, destinationTable, item_count,counter):
+    
+    print("Inside copyTable")
+    print("Coping", json1, "to", destinationTable)
+    
+    with open('dynamoresponse.json', 'r') as openfile:
+    # Reading from json file
+        dynamoresponse = json.load(openfile)
+        
     for page in dynamoresponse:
         for item in page['Items']:
             if (counter ==  item_count):
@@ -124,6 +140,8 @@ def copyTable(sourceTable, destinationTable,item_count,counter):
                     )   
             counter = counter + 1
 
+
+
 def backupTable(destTableName, backupTimeStamp):
     print("Inside backupTable")
     print("Taking backup of = ", destTableName)
@@ -134,18 +152,6 @@ def backupTable(destTableName, backupTimeStamp):
         BackupName=backupTimeStamp
     )
     print("Backup ARN =", response["BackupDetails"]["BackupArn"])
-
-def deleteDestinationTable(destTableName):
-    print("Inside deleteDestinationTable")
-    try:
-        dynamotargetclient.delete_table(TableName=destTableName)
-        waiter = dynamotargetclient.get_waiter('table_not_exists')
-        waiter.wait(TableName=destTableName)
-        print("Table deleted")
-    except dynamotargetclient.exceptions.ResourceNotFoundException:
-        print("Table does not exist")
-
-
 
 
 
@@ -189,10 +195,12 @@ elif (result['sourceTableExists'] == "true" ) and (result['destinationTableExist
 
 elif (result['sourceTableExists'] == "true" ) and (result['destinationTableExists'] == "true" ):
     backupTable(destinationTableName, backupName)
-    deleteDestinationTable(destinationTableName)
 
     createDestinationTable(sourceTableName)
     copyTable(sourceTableName, destinationTableName, item_count, counter)
 
 else:
     print("Something is wrong")
+    
+
+
