@@ -12,8 +12,6 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('-st', '--sourceTableName', required=True, action="store", dest="sourceTableName",
                     help="Source AWS Account DyanamoDB Table", default=None)
-parser.add_argument('-dt', '--destinationTableName', required=True, action="store", dest="destinationTableName",
-                    help="Destination AWS Account DyanamoDB Table", default=None) 
 args = parser.parse_args()                                                                                                                       
 
 
@@ -53,26 +51,19 @@ dynamotargetclient = boto3.client('dynamodb', region_name=region) #Specify the r
 
 dynamopaginator = dynamoclient.get_paginator('scan')
 
-def validateTables(sourceTable, destinationTable):
+def validateTables(sourceTable):
     print("Inside validateTables")
     try:
         dynamoclient.describe_table(TableName=sourceTable)
         sourceTableExists = "true"
     except dynamotargetclient.exceptions.ResourceNotFoundException:
         sourceTableExists = "false"
-
-
-    try:
-        dynamotargetclient.describe_table(TableName=destinationTable)
-        destinationTableExists = "true"
-    except dynamotargetclient.exceptions.ResourceNotFoundException:
-        destinationTableExists = "false"
     
-    return {'sourceTableExists': sourceTableExists, 'destinationTableExists':destinationTableExists}        
+    return {'sourceTableExists': sourceTableExists}        
 
 
 
-def copyTable(sourceTable, json1, item_count,counter):
+def copyTable(sourceTable, json1, item_count):
     
     print("Inside copyTable")
     print("Coping", sourceTable, "to", json1)
@@ -100,29 +91,6 @@ def copyTable(sourceTable, json1, item_count,counter):
     with open("sourceTable.json", "w") as outfile:
         json.dump(sourceTable, outfile)
 
-def copyToAnother(json1, destinationTable, item_count,counter):
-    
-    print("Inside copyTable")
-    print("Coping", json1, "to", destinationTable)
-    
-    with open('dynamoresponse.json', 'r') as openfile:
-    # Reading from json file
-        dynamoresponse = json.load(openfile)
-        
-    for page in dynamoresponse:
-        for item in page['Items']:
-            if (counter ==  item_count):
-                print("exiting")
-                sys.exit()
-            else:      
-                print('writing item no', counter)
-                dynamotargetclient.put_item(
-                    TableName=destinationTable,
-                    Item=item
-                    )   
-            counter = counter + 1
-
-
 
 def backupTable(destTableName, backupTimeStamp):
     print("Inside backupTable")
@@ -143,23 +111,6 @@ def doesNotExist():
     print("Exiting the execution")
     # sys.exit()
 
-def createDestinationTable(sourceTable):
-    print("Inside createDestinationTable")
-    source_table = source_session.resource('dynamodb').Table(sourceTable)
-
-    target_table = target_dynamodb.create_table(
-    TableName=destinationTableName,
-    KeySchema=source_table.key_schema,
-    AttributeDefinitions=source_table.attribute_definitions,
-    ProvisionedThroughput={
-        'ReadCapacityUnits': 5,
-        'WriteCapacityUnits': 5
-    })
-
-    target_table.wait_until_exists()
-    target_table.reload()
-
-
 
 result = validateTables(sourceTableName, destinationTableName)
 print("value of sourceTableExists = ", result['sourceTableExists'])
@@ -172,14 +123,11 @@ elif (result['sourceTableExists'] == "false" ) and (result['destinationTableExis
     print("Source Table does not exist")
 
 elif (result['sourceTableExists'] == "true" ) and (result['destinationTableExists'] == "false" ):
-    createDestinationTable(sourceTableName)
-    copyTable(sourceTableName, destinationTableName, item_count, counter)
+    copyTable(sourceTableName, destinationTableName, item_count )
 
 elif (result['sourceTableExists'] == "true" ) and (result['destinationTableExists'] == "true" ):
     backupTable(destinationTableName, backupName)
-
-    createDestinationTable(sourceTableName)
-    copyTable(sourceTableName, destinationTableName, item_count, counter)
+    copyTable(sourceTableName, destinationTableName, item_count)
 
 else:
     print("Something is wrong")
