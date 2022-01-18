@@ -9,6 +9,6 @@ This script copies defined number of items from one DynamoDB table to another. I
 
 
 **Python Command to the run the script:**
-`python main.py -st <sourceTableName>` - This will create two json file dynamoresponse and sourcetable
+`python main.py -st <sourceTableName> -r <region>` - This will create two json file dynamoresponse and sourcetable
 
-`python jsonToMain.py -dt <destinationTableName>` - this will upload or copy the following table to destination folder
+`python jsonToMain.py -dt <destinationTableName> -r <region>` - this will upload or copy the following table to destination folder

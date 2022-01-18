@@ -12,12 +12,14 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('-dt', '--destinationTableName', required=True, action="store", dest="destinationTableName",
                     help="Destination AWS Account DyanamoDB Table", default=None) 
+parser.add_argument('-r', '--region', required=True, action="store", dest="region",
+                    help="Source AWS Account DyanamoDB Table", default=None)
 args = parser.parse_args()                                                                                                                       
 
 
 destinationTableName=args.destinationTableName 
 
-region = 'us-west-1'
+region = args.region
 
 print("Printing values")
 print("destinationTableName", destinationTableName)

@@ -12,6 +12,8 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('-st', '--sourceTableName', required=True, action="store", dest="sourceTableName",
                     help="Source AWS Account DyanamoDB Table", default=None)
+parser.add_argument('-r', '--region', required=True, action="store", dest="region",
+                    help="Source AWS Account DyanamoDB Table", default=None)
 args = parser.parse_args()                                                                                                                       
 
 
@@ -20,7 +22,7 @@ args = parser.parse_args()
 sourceTableName=args.sourceTableName 
 destinationTableName=args.destinationTableName 
 
-region = 'us-west-1'
+region = args.region
 
 sourceTableExists = "false" 
 destinationTableExists = "false" 
