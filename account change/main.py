@@ -10,7 +10,7 @@ import json
 global args
 parser = argparse.ArgumentParser()
 
-parser.add_argument('-st', '--sourceTableName', required=True, action="store", dest="sourceTableName",
+parser.add_argument('-st', '--sourceTableName', required=False, action="store", dest="sourceTableName",
                     help="Source AWS Account DyanamoDB Table", default=None)
 parser.add_argument('-r', '--region', required=True, action="store", dest="region",
                     help="Source AWS Account DyanamoDB Table", default=None)
